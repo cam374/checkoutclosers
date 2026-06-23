@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Checkout Closers — Human Sales Closers for Abandoned Cart Recovery</title>
+<link rel="icon" href="assets/favicon.png" type="image/png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -50,8 +51,8 @@ nav{
   border-bottom:.5px solid var(--border);
 }
 .logo{display:flex;align-items:center;gap:10px;font-size:.95rem;font-weight:800;color:var(--white);letter-spacing:-.4px}
-.logo-icon{width:34px;height:34px;border-radius:9px;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-icon svg{width:28px;height:28px}
+.logo-icon{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;padding:2px}
+.logo-icon img{width:100%;height:100%;object-fit:contain;display:block}
 nav ul{display:flex;gap:2rem;list-style:none;font-size:.82rem;color:var(--muted)}
 nav ul a:hover{color:var(--text)}
 .nav-cta{
@@ -247,7 +248,8 @@ hr{border:none;border-top:.5px solid var(--border)}
 .crm-wrap{display:grid;grid-template-columns:180px 1fr 220px;border:.5px solid var(--bd2);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem}
 .crm-sidebar{background:#0A0B0D;border-right:.5px solid var(--border);padding:1rem 0}
 .crm-brand{display:flex;align-items:center;gap:8px;padding:.5rem 1rem 1rem;font-size:.78rem;font-weight:800;color:var(--white)}
-.crm-logo{width:22px;height:22px;background:var(--lime);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.crm-logo{width:22px;height:22px;background:#fff;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;padding:1px}
+.crm-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .crm-nav-section{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);padding:.6rem 1rem .3rem}
 .crm-nav-item{display:flex;align-items:center;gap:7px;padding:.45rem 1rem;font-size:.75rem;color:var(--muted);cursor:pointer;transition:background .1s}
 .crm-nav-item:hover{background:rgba(255,255,255,.03);color:var(--text)}
@@ -424,9 +426,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <nav>
   <div class="logo">
     <div class="logo-icon">
-      <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
-        <text x="14" y="21" text-anchor="middle" font-family="Inter,sans-serif" font-weight="900" font-size="20" fill="#000" letter-spacing="-1">C</text>
-      </svg>
+      <img src="assets/logo.png" alt="CheckoutClosers logo"/>
     </div>
     CheckoutClosers
   </div>
@@ -572,7 +572,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
     <div class="crm-sidebar">
       <div class="crm-brand">
         <div class="crm-logo">
-          <svg viewBox="0 0 20 20" fill="none" width="12" height="12"><path d="M3 14.5C3.8 12.8 5.2 11.8 7 11.5C7.8 11.35 8.5 11.3 9 11.3" stroke="#000" stroke-width="1.6" stroke-linecap="round"/><path d="M9 11.3C9 11.3 9.5 8.5 12 7C14.5 5.5 17 6 17 6" stroke="#000" stroke-width="1.6" stroke-linecap="round"/><polyline points="13,3 17,3 17,7" stroke="#000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="10" x2="17" y2="3" stroke="#000" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <img src="assets/logo.png" alt=""/>
         </div>
         <span>CheckoutClosers</span>
       </div>
@@ -871,12 +871,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <div class="foot">
   <div class="logo">
     <div class="logo-icon" style="width:26px;height:26px;border-radius:6px">
-      <svg viewBox="0 0 20 20" fill="none" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 14.5C3.8 12.8 5.2 11.8 7 11.5C7.8 11.35 8.5 11.3 9 11.3" stroke="#000" stroke-width="1.6" stroke-linecap="round"/>
-        <path d="M9 11.3C9 11.3 9.5 8.5 12 7C14.5 5.5 17 6 17 6" stroke="#000" stroke-width="1.6" stroke-linecap="round"/>
-        <polyline points="13,3 17,3 17,7" stroke="#000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="10" y1="10" x2="17" y2="3" stroke="#000" stroke-width="1.7" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/logo.png" alt="CheckoutClosers logo"/>
     </div>
     CheckoutClosers
   </div>
