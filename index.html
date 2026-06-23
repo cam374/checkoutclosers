@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Checkout Closers — Human Sales Closers for Abandoned Cart Recovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060708;
+  --bg2:#0C0E10;
+  --card:#0F1113;
+  --card2:#141618;
+  --border:rgba(255,255,255,0.07);
+  --bd2:rgba(255,255,255,0.11);
+  --lime:#E09B20;
+  --lime-d:#C07F10;
+  --lime-bg:rgba(224,155,32,0.07);
+  --lime-bd:rgba(224,155,32,0.2);
+  --red:#F87171;
+  --red-bg:rgba(248,113,113,0.07);
+  --red-bd:rgba(248,113,113,0.18);
+  --amber:#FBBF24;
+  --blue:#60A5FA;
+  --text:#E8EDF2;
+  --muted:#6B7A85;
+  --subtle:#394249;
+  --white:#FFFFFF;
+  --r:10px;--rl:14px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:16px;line-height:1.6;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:99;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem;height:60px;
+  background:rgba(6,7,8,0.88);
+  backdrop-filter:blur(20px);
+  border-bottom:.5px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:10px;font-size:.95rem;font-weight:800;color:var(--white);letter-spacing:-.4px}
+.logo-icon{width:34px;height:34px;border-radius:9px;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:28px;height:28px}
+nav ul{display:flex;gap:2rem;list-style:none;font-size:.82rem;color:var(--muted)}
+nav ul a:hover{color:var(--text)}
+.nav-cta{
+  background:var(--lime);color:#000;
+  padding:.45rem 1.1rem;border-radius:8px;
+  font-size:.82rem;font-weight:700;transition:background .15s;
+}
+.nav-cta:hover{background:var(--lime-d)}
+
+/* HERO */
+.hero-wrap{
+  min-height:100vh;display:flex;align-items:center;
+  padding:80px 2.5rem 60px;
+  position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;top:0;left:0;width:55%;height:100%;
+  background:radial-gradient(ellipse 70% 60% at 20% 50%,rgba(181,242,60,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{
+  max-width:1280px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,0.04);border:.5px solid var(--border);
+  border-radius:100px;padding:.35rem .9rem;
+  font-size:.72rem;font-weight:600;color:var(--muted);
+  margin-bottom:2rem;letter-spacing:.01em;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--lime);flex-shrink:0;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{
+  font-size:clamp(3.5rem,5.5vw,6rem);
+  font-weight:900;color:var(--white);
+  line-height:.98;letter-spacing:-3px;
+  margin-bottom:1.75rem;
+}
+h1 .g{color:var(--lime)}
+.hero-sub{
+  font-size:1.05rem;color:var(--muted);
+  max-width:460px;line-height:1.8;margin-bottom:2.25rem;
+}
+.hero-ctas{display:flex;gap:10px;margin-bottom:2rem;flex-wrap:wrap}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--lime);color:#000;
+  padding:.75rem 1.4rem;border-radius:9px;
+  font-weight:700;font-size:.95rem;border:none;cursor:pointer;
+  transition:background .15s;white-space:nowrap;
+}
+.btn-primary:hover{background:var(--lime-d)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.05);color:var(--white);
+  padding:.75rem 1.4rem;border-radius:9px;
+  font-weight:700;font-size:.95rem;
+  border:.5px solid var(--bd2);cursor:pointer;transition:background .15s;white-space:nowrap;
+}
+.btn-secondary:hover{background:rgba(255,255,255,0.08)}
+.cat-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:.75rem;color:var(--muted);border:.5px solid var(--border);border-radius:100px;padding:.3rem .75rem}
+
+/* RECOVERY CONSOLE */
+.console{
+  background:var(--card);border:.5px solid var(--bd2);
+  border-radius:var(--rl);overflow:hidden;
+  box-shadow:0 0 80px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.05);
+}
+.console-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:.5px solid var(--border);
+  background:rgba(255,255,255,0.02);
+}
+.console-mac{display:flex;gap:6px}
+.mac-dot{width:10px;height:10px;border-radius:50%}
+.console-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.live-badge{
+  display:flex;align-items:center;gap:5px;
+  font-size:.68rem;font-weight:700;color:var(--lime);
+  background:var(--lime-bg);border:.5px solid var(--lime-bd);
+  padding:3px 10px;border-radius:100px;
+}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--lime);animation:blink 1.5s infinite}
+.console-total{padding:18px 18px 14px;border-bottom:.5px solid var(--border)}
+.total-label{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.total-num{font-size:2.6rem;font-weight:900;color:var(--white);letter-spacing:-2px;line-height:1}
+.total-delta{display:flex;align-items:center;gap:5px;margin-top:6px;font-size:.77rem;color:var(--lime);font-weight:600}
+.feed-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 18px;border-bottom:.5px solid var(--border);
+  transition:background .1s;
+}
+.feed-row:hover{background:var(--card2)}
+.feed-row:last-child{border-bottom:none}
+.avatar{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:800;flex-shrink:0;letter-spacing:.02em;
+}
+.feed-info{flex:1;min-width:0}
+.feed-name{font-size:.82rem;font-weight:600;color:var(--white)}
+.feed-event{font-size:.72rem;color:var(--muted)}
+.feed-right{text-align:right;flex-shrink:0}
+.feed-amt{font-size:.88rem;font-weight:700;color:var(--lime)}
+.feed-status{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.console-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 18px;border-top:.5px solid var(--border);
+  background:rgba(255,255,255,0.015);
+  font-size:.7rem;color:var(--subtle);
+}
+.console-foot strong{color:var(--lime)}
+
+/* SECTION SYSTEM */
+.section{max-width:1280px;margin:0 auto;padding:7rem 2.5rem}
+.sec-num{
+  font-size:.67rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--subtle);margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;
+}
+.sec-num::after{content:'';flex:1;height:.5px;background:var(--border)}
+h2{
+  font-size:clamp(2.2rem,3.5vw,3rem);font-weight:900;
+  color:var(--white);line-height:1.05;letter-spacing:-1.5px;margin-bottom:1rem;
+}
+h2 .g{color:var(--lime)}
+.sub{font-size:1rem;color:var(--muted);max-width:500px;line-height:1.8;margin-bottom:3rem}
+hr{border:none;border-top:.5px solid var(--border)}
+
+/* STATS STRIP */
+.stats-strip{border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);background:var(--bg2)}
+.stats-inner{
+  max-width:1280px;margin:0 auto;padding:0 2.5rem;
+  display:grid;grid-template-columns:repeat(4,1fr);
+}
+.stat-cell{padding:2.75rem 2rem 2.75rem 0;border-right:.5px solid var(--border)}
+.stat-cell:last-child{border-right:none;padding-left:2rem}
+.stat-cell:not(:first-child){padding-left:2rem}
+.stat-tag{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:.5rem}
+.stat-n{font-size:3.2rem;font-weight:900;line-height:1;letter-spacing:-2px;margin-bottom:.4rem}
+.stat-n.r{color:var(--red)}.stat-n.g{color:var(--lime)}
+.stat-desc{font-size:.8rem;color:var(--muted);line-height:1.6}
+
+/* PROBLEM */
+.problem-layout{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.leak-stack{display:flex;flex-direction:column;gap:1px}
+.leak{display:flex;gap:1.25rem;align-items:flex-start;padding:1.5rem 1.75rem;background:var(--card);border-bottom:.5px solid var(--border)}
+.leak:first-child{border-radius:var(--rl) var(--rl) 0 0}
+.leak:last-child{border-radius:0 0 var(--rl) var(--rl);border-bottom:none}
+.leak-no{font-size:.7rem;font-weight:800;color:var(--subtle);min-width:20px;padding-top:2px}
+.leak h3{font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:4px}
+.leak p{font-size:.8rem;color:var(--muted);line-height:1.65}
+
+/* VS TABLE */
+.vs{border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.vs-h,.vs-r{display:grid;grid-template-columns:1.7fr 1fr 1fr 1.1fr}
+.vs-h>div,.vs-r>div{padding:.75rem 1rem;border-right:.5px solid var(--border)}
+.vs-h>div:last-child,.vs-r>div:last-child{border-right:none}
+.vs-h>div{font-size:.63rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);background:var(--bg2)}
+.vs-r{border-top:.5px solid var(--border)}
+.vs-r>div{background:var(--card);font-size:.8rem}
+.col-l{color:var(--muted)}.col-b{color:var(--red);font-weight:600}
+.col-ok{color:var(--amber);font-weight:600}.col-g{color:var(--lime);font-weight:700}
+.vs-r.win>div{background:var(--lime-bg)}
+
+/* WAVEFORM */
+.wv-bar{
+  width:3px;height:14px;background:var(--lime);border-radius:2px;flex-shrink:0;
+  animation:wave .8s ease-in-out infinite alternate;
+}
+@keyframes wave{from{height:4px;opacity:.4}to{height:16px;opacity:1}}
+
+/* PLATFORMS */
+.platform-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:2.5rem}
+.plat-card{background:var(--card);padding:1.5rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;transition:background .1s}
+.plat-card:hover{background:var(--card2)}
+.plat-icon{font-size:1.4rem}
+.plat-name{font-size:.72rem;font-weight:600;color:var(--muted)}
+
+/* INTEGRATION */
+.integ-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2.5rem}
+.integ-card{background:var(--card);border:.5px solid var(--border);border-radius:var(--rl);padding:2rem}
+.integ-no{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:.75rem}
+.integ-card h3{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:.75rem;line-height:1.3}
+.integ-card p{font-size:.82rem;color:var(--muted);line-height:1.75}
+.integ-flow{margin-top:1.5rem;display:flex;flex-direction:column;gap:.4rem}
+.integ-step{display:flex;align-items:center;gap:.75rem;font-size:.8rem;color:var(--muted)}
+.integ-step-dot{width:7px;height:7px;border-radius:50%;background:var(--subtle);flex-shrink:0}
+.integ-arrow{font-size:.9rem;color:var(--subtle);margin-left:.25rem}
+
+/* CRM MOCK */
+.crm-wrap{display:grid;grid-template-columns:180px 1fr 220px;border:.5px solid var(--bd2);border-radius:var(--rl);overflow:hidden;margin-bottom:1.25rem}
+.crm-sidebar{background:#0A0B0D;border-right:.5px solid var(--border);padding:1rem 0}
+.crm-brand{display:flex;align-items:center;gap:8px;padding:.5rem 1rem 1rem;font-size:.78rem;font-weight:800;color:var(--white)}
+.crm-logo{width:22px;height:22px;background:var(--lime);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.crm-nav-section{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);padding:.6rem 1rem .3rem}
+.crm-nav-item{display:flex;align-items:center;gap:7px;padding:.45rem 1rem;font-size:.75rem;color:var(--muted);cursor:pointer;transition:background .1s}
+.crm-nav-item:hover{background:rgba(255,255,255,.03);color:var(--text)}
+.crm-nav-item.active{background:rgba(181,242,60,.07);color:var(--lime)}
+.crm-main{background:var(--card);display:flex;flex-direction:column}
+.crm-main-top{display:flex;align-items:flex-start;justify-content:space-between;padding:1.1rem 1.25rem .75rem;border-bottom:.5px solid var(--border)}
+.crm-page-title{font-size:.95rem;font-weight:800;color:var(--white);margin-bottom:2px}
+.crm-page-sub{font-size:.7rem;color:var(--muted)}
+.crm-table-head{display:grid;grid-template-columns:1.5fr .8fr .9fr 1fr .9fr;gap:8px;padding:.5rem 1.25rem;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--subtle);border-bottom:.5px solid var(--border)}
+.crm-row{display:grid;grid-template-columns:1.5fr .8fr .9fr 1fr .9fr;gap:8px;align-items:center;padding:.65rem 1.25rem;border-bottom:.5px solid var(--border);transition:background .1s}
+.crm-row:hover{background:var(--card2)}
+.crm-row:last-of-type{border-bottom:none}
+.crm-name{font-size:.78rem;font-weight:600;color:var(--white)}
+.crm-store{font-size:.68rem;color:var(--muted)}
+.crm-aov{font-size:.78rem;font-weight:600;color:var(--text)}
+.crm-time{font-size:.72rem;color:var(--muted)}
+.crm-closer{font-size:.72rem;color:var(--muted)}
+.crm-foot{display:flex;justify-content:space-between;padding:.65rem 1.25rem;border-top:.5px solid var(--border);font-size:.68rem;color:var(--muted);margin-top:auto}
+.crm-detail{background:#0A0B0D;border-left:.5px solid var(--border)}
+.crm-detail-head{display:flex;align-items:center;gap:10px;padding:1.1rem 1rem .75rem;border-bottom:.5px solid var(--border)}
+.crm-d-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;flex-shrink:0}
+.crm-detail-body{padding:1rem}
+.crm-d-label{font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);margin-bottom:.3rem}
+.crm-d-outcome{margin-bottom:.25rem}
+.crm-d-note{font-size:.74rem;color:var(--muted);line-height:1.6;font-style:italic;background:var(--card);border-radius:6px;padding:.6rem .75rem;border:.5px solid var(--border)}
+
+/* DIALER */
+.dialer{border:.5px solid var(--bd2);border-radius:var(--rl);overflow:hidden}
+.dialer-top{
+  background:var(--bg2);display:flex;align-items:center;justify-content:space-between;
+  padding:.75rem 1.25rem;border-bottom:.5px solid var(--border);
+}
+.dialer-brand{display:flex;align-items:center;gap:8px;font-size:.82rem;font-weight:800;color:var(--white)}
+.d-icon{width:24px;height:24px;background:var(--lime);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.d-icon svg{width:12px;height:12px}
+.d-cols{
+  display:grid;grid-template-columns:30px 1.8fr 1.3fr 1.1fr 1fr;
+  gap:10px;padding:7px 14px;
+  background:var(--bg2);border-bottom:.5px solid var(--border);
+  font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--subtle);
+}
+.d-row{
+  display:grid;grid-template-columns:30px 1.8fr 1.3fr 1.1fr 1fr;
+  gap:10px;align-items:center;
+  padding:10px 14px;border-top:.5px solid var(--border);
+  background:var(--card);transition:background .1s;
+}
+.d-row:hover{background:var(--card2)}
+.call-btn{
+  width:24px;height:24px;border-radius:6px;border:.5px solid var(--lime-bd);
+  background:var(--lime-bg);display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.call-btn svg{width:10px;height:10px;stroke:var(--lime);fill:none;stroke-width:2}
+.d-name{font-size:.78rem;font-weight:600;color:var(--white)}
+.d-co{font-size:.69rem;color:var(--muted);margin-top:1px}
+.d-phone{font-family:monospace;font-size:.71rem;color:var(--muted)}
+.d-trigger{font-size:.69rem;color:var(--subtle)}
+.badge{font-size:.64rem;font-weight:700;padding:3px 8px;border-radius:100px;display:inline-block;white-space:nowrap}
+.b-ans{background:var(--lime-bg);color:var(--lime);border:.5px solid var(--lime-bd)}
+.b-call{background:rgba(96,165,250,0.08);color:var(--blue);border:.5px solid rgba(96,165,250,0.2)}
+.b-vm{background:rgba(251,191,36,0.08);color:var(--amber);border:.5px solid rgba(251,191,36,0.2)}
+.b-fol{background:rgba(167,139,250,0.08);color:#A78BFA;border:.5px solid rgba(167,139,250,0.2)}
+.b-new{background:var(--card2);color:var(--muted);border:.5px solid var(--border)}
+.dialer-foot{
+  background:var(--bg2);border-top:.5px solid var(--border);
+  padding:8px 14px;display:flex;justify-content:space-between;
+  font-size:.68rem;color:var(--subtle);
+}
+.dialer-foot strong{color:var(--lime)}
+.d-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-top:1.25rem}
+.ds{background:var(--card);padding:1.4rem 1.6rem}
+.ds-l{font-size:.64rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);margin-bottom:.35rem}
+.ds-n{font-size:1.8rem;font-weight:900;color:var(--lime);letter-spacing:-1px;line-height:1}
+.ds-n.w{color:var(--white)}
+.ds-s{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+/* SERVICES */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.svc{background:var(--card);padding:2.5rem}
+.svc-no{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:1rem}
+.svc h3{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:.4rem}
+.svc p{font-size:.82rem;color:var(--muted);line-height:1.7}
+.svc-stat{display:flex;align-items:baseline;gap:6px;margin-top:1.4rem;padding-top:1.1rem;border-top:.5px solid var(--border)}
+.svc-n{font-size:1.8rem;font-weight:900;color:var(--lime);letter-spacing:-1px}
+.svc-l{font-size:.72rem;color:var(--muted)}
+
+/* HOW */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:2rem}
+.how-card{background:var(--card);padding:2.25rem 1.75rem}
+.how-n{font-size:2.2rem;font-weight:900;color:var(--lime);letter-spacing:-1.5px;line-height:1;margin-bottom:1rem}
+.how-card h3{font-size:.88rem;font-weight:700;color:var(--white);margin-bottom:.4rem}
+.how-card p{font-size:.78rem;color:var(--muted);line-height:1.65}
+.how-pills{display:flex;gap:10px;flex-wrap:wrap}
+.how-pill{
+  display:flex;align-items:center;gap:8px;
+  background:var(--lime-bg);border:.5px solid var(--lime-bd);border-radius:var(--r);
+  padding:.8rem 1.1rem;font-size:.8rem;color:var(--muted);
+}
+.how-pill strong{color:var(--lime);font-size:1rem;font-weight:900}
+
+/* WHAT YOU GET */
+.wyg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.wyg-card{background:var(--card);padding:2rem}
+.wyg-tag{font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);margin-bottom:.65rem}
+.wyg-card h3{font-size:.88rem;font-weight:700;color:var(--white);margin-bottom:.35rem}
+.wyg-card p{font-size:.78rem;color:var(--muted);line-height:1.65}
+
+/* CALC */
+.calc-wrap{display:grid;grid-template-columns:1fr 1fr;border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.calc-l{background:var(--card);padding:2.75rem}
+.calc-r{background:var(--bg2);padding:2.75rem;border-left:.5px solid var(--border)}
+.c-lbl{
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.65rem;margin-top:2rem;
+}
+.c-lbl:first-child{margin-top:0}
+.c-lbl span{color:var(--white);font-size:1.5rem;text-transform:none;letter-spacing:-1px;font-weight:800;line-height:1}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:4px;background:var(--card2);cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--lime);border:3px solid var(--bg)}
+.c-rl{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:5px}
+.c-big{font-size:3rem;font-weight:900;color:var(--white);letter-spacing:-2px;line-height:1}
+.c-sub{font-size:.74rem;color:var(--subtle);margin-top:4px}
+.c-rec-box{background:var(--lime-bg);border:.5px solid var(--lime-bd);border-radius:var(--r);padding:1.1rem 1.35rem;margin-top:1.75rem}
+.c-rec-box .c-rl{color:var(--lime)}
+.c-rec-n{font-size:2.2rem;font-weight:900;color:var(--lime);letter-spacing:-1.5px;line-height:1}
+.c-cells{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
+.c-cell{background:var(--card);border-radius:var(--r);padding:.8rem .9rem;font-size:.7rem;color:var(--muted)}
+.c-cell-v{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:1px}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.25rem}
+.price-card{background:var(--card);border:.5px solid var(--border);border-radius:var(--rl);padding:2.5rem}
+.price-card.feat{border-color:var(--lime-bd)}
+.p-lbl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:1.1rem}
+.p-nums{display:flex;align-items:flex-end;gap:2rem;margin-bottom:.65rem}
+.p-num-l{font-size:.65rem;color:var(--subtle);margin-bottom:3px}
+.p-num-n{font-size:2.75rem;font-weight:900;color:var(--white);letter-spacing:-2px;line-height:1}
+.p-num-n.g{color:var(--lime)}
+.p-desc{font-size:.82rem;color:var(--muted);line-height:1.75;margin-bottom:1.75rem}
+.p-list{display:flex;flex-direction:column;gap:9px}
+.p-row{display:flex;align-items:center;gap:9px;font-size:.82rem;color:var(--muted)}
+.chk{width:17px;height:17px;border-radius:50%;background:var(--lime-bg);border:.5px solid var(--lime-bd);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chk svg{width:7px;height:7px;stroke:var(--lime);stroke-width:3;fill:none}
+
+/* CTA */
+.cta-sec{text-align:center;padding:9rem 2.5rem;position:relative;overflow:hidden}
+.cta-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse at top,rgba(181,242,60,0.06) 0%,transparent 65%);pointer-events:none}
+.cta-inner{max-width:640px;margin:0 auto;position:relative}
+.cta-sec h2{margin-bottom:.9rem}
+.cta-sec p{color:var(--muted);font-size:1rem;margin-bottom:2.25rem;line-height:1.8}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cta-note{margin-top:1.5rem;font-size:.75rem;color:var(--subtle)}
+
+/* FOOTER */
+.foot{border-top:.5px solid var(--border);max-width:1280px;margin:0 auto;padding:1.75rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:.76rem;color:var(--subtle)}
+.foot-links{display:flex;gap:1.75rem}
+.foot-links a:hover{color:var(--muted)}
+
+@media(max-width:960px){
+  .hero-inner,.problem-layout,.price-grid,.calc-wrap,.integ-layout{grid-template-columns:1fr}
+  .svc-grid,.how-grid{grid-template-columns:1fr 1fr}
+  .platform-grid{grid-template-columns:repeat(3,1fr)}
+  .crm-wrap{grid-template-columns:1fr}
+  .crm-sidebar,.crm-detail{display:none}
+  nav ul{display:none}
+  .hero-wrap{padding:80px 1.5rem 50px}
+  .section{padding:5rem 1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+        <text x="14" y="21" text-anchor="middle" font-family="Inter,sans-serif" font-weight="900" font-size="20" fill="#000" letter-spacing="-1">C</text>
+      </svg>
+    </div>
+    CheckoutClosers
+  </div>
+  <ul>
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#dialer">How It Works</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="https://calendly.com/checkoutclosers/call" class="nav-cta" target="_blank" rel="noopener">Book a Call</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero-wrap">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="eyebrow"><span class="dot"></span> Pay only when we recover.</div>
+      <h1>Turn Lost<br>Carts Into<br><span class="g">Closed Deals.</span></h1>
+      <p class="hero-sub">We put trained humans on the phone with your abandoned checkouts within minutes. No retainer. No setup fee. We only make money when you do.</p>
+      <div class="hero-ctas">
+        <a href="#calc" class="btn-primary">
+          Calculate my lost revenue
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#cta" class="btn-secondary">Get started</a>
+      </div>
+      <div class="cat-chips">
+        <span class="chip">+ Abandoned carts</span>
+        <span class="chip">+ Failed payments</span>
+        <span class="chip">+ Refund reversals</span>
+        <span class="chip">+ Reactivation</span>
+      </div>
+    </div>
+
+    <!-- RECOVERY CONSOLE -->
+    <div class="console">
+      <div class="console-top">
+        <div class="console-mac">
+          <div class="mac-dot" style="background:#FF5F57"></div>
+          <div class="mac-dot" style="background:#FEBC2E"></div>
+          <div class="mac-dot" style="background:#28C840"></div>
+        </div>
+        <div class="console-label">Recovery Console</div>
+        <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+      </div>
+      <div class="console-total">
+        <div class="total-label">Total Recovered (Across Clients)</div>
+        <div class="total-num" id="hero-total">$41,580,939</div>
+        <div class="total-delta">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          +24.7% vs. last week
+        </div>
+      </div>
+      <!-- Active call row -->
+      <div class="feed-row" style="background:rgba(181,242,60,0.05);border-bottom:.5px solid var(--lime-bd)">
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+          <div class="wv-bar" style="animation-delay:0s"></div>
+          <div class="wv-bar" style="animation-delay:.15s"></div>
+          <div class="wv-bar" style="animation-delay:.3s"></div>
+          <div class="wv-bar" style="animation-delay:.1s"></div>
+          <div class="wv-bar" style="animation-delay:.25s"></div>
+        </div>
+        <div class="feed-info">
+          <div class="feed-name" style="color:var(--lime)">Emily R. on the phone with Sarah M.</div>
+          <div class="feed-event">Abandoned checkout · $849 cart · closer called 4 min after drop</div>
+        </div>
+        <div class="feed-right">
+          <div style="font-size:.68rem;font-weight:700;color:var(--lime)" id="call-timer">4:23</div>
+          <div class="feed-status" style="color:var(--lime)">On call</div>
+        </div>
+      </div>
+      <!-- Static recovered rows -->
+      <div id="feed">
+        <div class="feed-row">
+          <div class="avatar" style="background:#1E2A1A;color:#7EC455">RS</div>
+          <div class="feed-info"><div class="feed-name">Riley S.</div><div class="feed-event">Closer called 2 min after card decline · sold on call</div></div>
+          <div class="feed-right"><div class="feed-amt">+$236</div><div class="feed-status">Recovered</div></div>
+        </div>
+        <div class="feed-row">
+          <div class="avatar" style="background:#1A1E2A;color:#5577CC">JL</div>
+          <div class="feed-info"><div class="feed-name">Jamie L.</div><div class="feed-event">Closer called 5 min after abandonment · closed on sizing Q</div></div>
+          <div class="feed-right"><div class="feed-amt">+$297</div><div class="feed-status">Recovered</div></div>
+        </div>
+        <div class="feed-row">
+          <div class="avatar" style="background:#2A1E1A;color:#CC7755">AP</div>
+          <div class="feed-info"><div class="feed-name">Alex P.</div><div class="feed-event">Closer called 3 min after abandonment · handled shipping objection</div></div>
+          <div class="feed-right"><div class="feed-amt">+$327</div><div class="feed-status">Closed</div></div>
+        </div>
+        <div class="feed-row">
+          <div class="avatar" style="background:#1E1A2A;color:#8855CC">TV</div>
+          <div class="feed-info"><div class="feed-name">Taylor V.</div><div class="feed-event">Closer called 6 min after card decline · updated card on call</div></div>
+          <div class="feed-right"><div class="feed-amt">+$376</div><div class="feed-status">Recovered</div></div>
+        </div>
+      </div>
+      <div class="console-foot">
+        <span><strong>47 closers</strong> active</span>
+        <span>uptime <strong>99.98%</strong></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- PROBLEM -->
+<hr/>
+<div class="section" id="problem">
+  <div class="sec-num">02 — The problem</div>
+  <div class="problem-layout">
+    <div>
+      <h2>Your flows send emails.<br><span class="g">Buyers pick up phones.</span></h2>
+      <p class="sub">You spent real money getting someone to your checkout. They left. Your Klaviyo flow fires. They ignore it. That's the gap we close.</p>
+      <div class="leak-stack">
+        <div class="leak"><div class="leak-no">01</div><div><h3>Abandoned checkouts</h3><p>7 in 10 people who reach checkout don't buy. Your email flow gets 3% back. A phone call within 5 minutes gets 28% back.</p></div></div>
+        <div class="leak"><div class="leak-no">02</div><div><h3>Failed payments</h3><p>Declined cards aren't lost sales — they're people who wanted to buy. One call and an updated card fixes most of them.</p></div></div>
+        <div class="leak"><div class="leak-no">03</div><div><h3>Refund requests</h3><p>Most refunds are a question nobody answered. "Does it fit?" "Will it arrive in time?" One conversation keeps the sale.</p></div></div>
+        <div class="leak"><div class="leak-no">04</div><div><h3>Win-back opportunities</h3><p>Your past customers already trust you. They just forgot about you. A reactivation call converts at 3× your cold traffic rate.</p></div></div>
+      </div>
+    </div>
+    <div>
+      <h2>Your Email and SMS flows vs.<br>a real conversation.</h2>
+      <p class="sub">Buyers aren't one-size-fits-all. One needs to know if it'll fit. One's worried about delivery. One just needs someone to pick up the phone and answer a question. Flows can't do any of that.</p>
+      <div class="vs">
+        <div class="vs-h"><div>Channel</div><div>Recovery rate</div><div>Response</div><div>Handles objections</div></div>
+        <div class="vs-r"><div class="col-l">Klaviyo flow</div><div class="col-b">3–5%</div><div class="col-b">Hours</div><div class="col-b">No</div></div>
+        <div class="vs-r"><div class="col-l">SMS blast</div><div class="col-b">2–4%</div><div class="col-b">Minutes</div><div class="col-b">No</div></div>
+        <div class="vs-r"><div class="col-l">AI voice bot</div><div class="col-ok">5–9%</div><div class="col-ok">Instant</div><div class="col-b">Barely</div></div>
+        <div class="vs-r win"><div class="col-g">Checkout Closers</div><div class="col-g">28%+</div><div class="col-g">&lt;5 min</div><div class="col-g">Yes</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD SECTION -->
+<hr/>
+<div class="section" id="dialer">
+  <div class="sec-num">03 — How it runs</div>
+  <h2>You wake up.<br><span class="g">The revenue's already there.</span></h2>
+  <p class="sub">A cart drops off your store. Within minutes, a trained closer is on the phone with that customer — handling their objection, answering their question, closing the sale. You see every call, every outcome, every dollar recovered.</p>
+
+  <!-- CRM MOCK -->
+  <div class="crm-wrap">
+    <div class="crm-sidebar">
+      <div class="crm-brand">
+        <div class="crm-logo">
+          <svg viewBox="0 0 20 20" fill="none" width="12" height="12"><path d="M3 14.5C3.8 12.8 5.2 11.8 7 11.5C7.8 11.35 8.5 11.3 9 11.3" stroke="#000" stroke-width="1.6" stroke-linecap="round"/><path d="M9 11.3C9 11.3 9.5 8.5 12 7C14.5 5.5 17 6 17 6" stroke="#000" stroke-width="1.6" stroke-linecap="round"/><polyline points="13,3 17,3 17,7" stroke="#000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="10" x2="17" y2="3" stroke="#000" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <span>CheckoutClosers</span>
+      </div>
+      <div class="crm-nav-section">Calls</div>
+      <div class="crm-nav-item active">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 0111.19 19a19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Call log
+      </div>
+      <div class="crm-nav-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Analytics
+      </div>
+      <div class="crm-nav-section">Recovery</div>
+      <div class="crm-nav-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        Abandoned carts
+      </div>
+      <div class="crm-nav-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Failed payments
+      </div>
+      <div class="crm-nav-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>
+        Refund reversals
+      </div>
+      <div class="crm-nav-section">Account</div>
+      <div class="crm-nav-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Call recordings
+      </div>
+      <div class="crm-nav-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Scripts
+      </div>
+    </div>
+    <div class="crm-main">
+      <div class="crm-main-top">
+        <div>
+          <div class="crm-page-title">Abandoned Carts</div>
+          <div class="crm-page-sub">Today's queue · <span style="color:var(--lime)">12 closers active</span></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="live-badge" style="font-size:.65rem"><span class="live-dot"></span> Store sync live</div>
+        </div>
+      </div>
+      <div class="crm-table-head">
+        <div>Customer</div><div>Order value</div><div>Time since drop</div><div>Closer assigned</div><div>Outcome</div>
+      </div>
+      <div class="crm-row">
+        <div><div class="crm-name">Sarah M.</div><div class="crm-store">June Saddlery</div></div>
+        <div class="crm-aov">$849</div>
+        <div class="crm-time">3 min ago</div>
+        <div class="crm-closer">Emily R.</div>
+        <div><span class="badge b-ans">Recovered</span></div>
+      </div>
+      <div class="crm-row">
+        <div><div class="crm-name">Mia K.</div><div class="crm-store">Flightpath Golf</div></div>
+        <div class="crm-aov">$799</div>
+        <div class="crm-time">9 min ago</div>
+        <div class="crm-closer">James T.</div>
+        <div><span class="badge b-call">On call now</span></div>
+      </div>
+      <div class="crm-row">
+        <div><div class="crm-name">Ryan A.</div><div class="crm-store">Torch Eyewear</div></div>
+        <div class="crm-aov">$399</div>
+        <div class="crm-time">14 min ago</div>
+        <div class="crm-closer">Sofia D.</div>
+        <div><span class="badge b-fol">Follow-up</span></div>
+      </div>
+      <div class="crm-row">
+        <div><div class="crm-name">Jeff S.</div><div class="crm-store">Kushae Beauty</div></div>
+        <div class="crm-aov">$549</div>
+        <div class="crm-time">22 min ago</div>
+        <div class="crm-closer">Marcus L.</div>
+        <div><span class="badge b-vm">Voicemail left</span></div>
+      </div>
+      <div class="crm-row">
+        <div><div class="crm-name">Linda C.</div><div class="crm-store">Alpine Gear Co.</div></div>
+        <div class="crm-aov">$1,299</div>
+        <div class="crm-time">31 min ago</div>
+        <div class="crm-closer">—</div>
+        <div><span class="badge b-new">In queue</span></div>
+      </div>
+      <div class="crm-foot">
+        <span>5 carts in view · <strong style="color:var(--lime)">$2,456 recovered today</strong></span>
+        <span style="color:var(--subtle)">All calls recorded · reviewed weekly</span>
+      </div>
+    </div>
+    <div class="crm-detail">
+      <div class="crm-detail-head">
+        <div class="crm-d-avatar" style="background:#1E2A1A;color:#7EC455">SM</div>
+        <div>
+          <div style="font-size:.82rem;font-weight:700;color:var(--white)">Sarah M.</div>
+          <div style="font-size:.7rem;color:var(--muted)">June Saddlery · $849 cart</div>
+        </div>
+      </div>
+      <div class="crm-detail-body">
+        <div class="crm-d-label">Call outcome</div>
+        <div class="crm-d-outcome"><span class="badge b-ans" style="font-size:.7rem">Recovered · $849</span></div>
+        <div class="crm-d-label" style="margin-top:1rem">Objection handled</div>
+        <div class="crm-d-note">"Wasn't sure it would arrive before the event — closer confirmed 2-day shipping, customer paid on call."</div>
+        <div class="crm-d-label" style="margin-top:1rem">Call duration</div>
+        <div style="font-size:.8rem;color:var(--text);font-weight:600">4m 12s</div>
+        <div class="crm-d-label" style="margin-top:1rem">Closer</div>
+        <div style="font-size:.8rem;color:var(--text)">Emily R. · <span style="color:var(--lime)">94% close rate</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SERVICES -->
+<hr/>
+<div class="section" id="services">
+  <div class="sec-num">04 — What we recover</div>
+  <h2>Four plays.<br>All handled for you.</h2>
+  <p class="sub">We plug into every revenue leak point after checkout — not just abandoned carts.</p>
+  <div class="svc-grid">
+    <div class="svc"><div class="svc-no">01 — Primary</div><h3>Abandoned cart & checkout recovery</h3><p>A trained closer calls within 5 minutes of abandonment, handles the objection live, and takes payment on the spot if needed.</p><div class="svc-stat"><div class="svc-n">28%</div><div class="svc-l">avg close rate on outreach</div></div></div>
+    <div class="svc"><div class="svc-no">02 — High yield</div><h3>Failed payment & card decline recovery</h3><p>We call customers whose cards declined, walk them through updating payment, and stay on the line until it processes.</p><div class="svc-stat"><div class="svc-n">63%</div><div class="svc-l">of card declines recovered</div></div></div>
+    <div class="svc"><div class="svc-no">03 — Defensive</div><h3>Refund reversal</h3><p>Before money leaves your account, we call. Most refunds are a question the customer never got answered.</p><div class="svc-stat"><div class="svc-n">41%</div><div class="svc-l">of refund requests reversed</div></div></div>
+    <div class="svc"><div class="svc-no">04 — Growth</div><h3>Upsell & customer reactivation</h3><p>Post-purchase upsell calls and lapsed-customer reactivation. Your existing buyers convert at 3× cold traffic.</p><div class="svc-stat"><div class="svc-n">2.4×</div><div class="svc-l">lifetime value increase</div></div></div>
+  </div>
+</div>
+
+<!-- HOW -->
+<hr/>
+<div class="section" id="how">
+  <div class="sec-num">05 — Works with your stack</div>
+  <h2>Connects to your store<br>in under 48 hours.</h2>
+  <p class="sub">Whatever platform you're on — we're already integrated. One setup call. No engineers on your end. Live in 48 hours.</p>
+
+  <!-- PLATFORMS -->
+  <div class="platform-grid">
+    <div class="plat-card">
+      <div class="plat-name">Shopify</div>
+    </div>
+    <div class="plat-card">
+      <div class="plat-name">WooCommerce</div>
+    </div>
+    <div class="plat-card">
+      <div class="plat-name">ClickFunnels</div>
+    </div>
+    <div class="plat-card">
+      <div class="plat-name">BigCommerce</div>
+    </div>
+  </div>
+
+  <!-- INTEGRATION EXPLAINER -->
+  <div class="integ-layout">
+    <div class="integ-card">
+      <div class="integ-no">How data flows</div>
+      <h3>Every cart, every number, every detail — pushed to your closer automatically.</h3>
+      <p>When a buyer drops off your checkout, their name, phone number, cart value, and what they were buying gets pushed instantly to their assigned closer. The closer walks into the call already knowing who they're talking to and what they almost bought.</p>
+      <div class="integ-flow">
+        <div class="integ-step"><div class="integ-step-dot"></div><span>Buyer abandons checkout</span></div>
+        <div class="integ-arrow">↓</div>
+        <div class="integ-step"><div class="integ-step-dot"></div><span>Name, phone, cart, product → closer's screen in seconds</span></div>
+        <div class="integ-arrow">↓</div>
+        <div class="integ-step"><div class="integ-step-dot" style="background:var(--lime)"></div><span style="color:var(--lime)">Closer calls. Closes. Revenue recovered.</span></div>
+      </div>
+    </div>
+    <div class="integ-card">
+      <div class="integ-no">How attribution works</div>
+      <h3>You always know exactly what we recovered. Down to the dollar.</h3>
+      <p>Every sale closed by a closer is tracked via a unique referral code tied to that call. No grey area, no "we think we influenced this." If a closer didn't close it on the phone, we don't invoice for it. Attribution is 100% transparent — you can audit every line item.</p>
+      <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:var(--bg2);border:.5px solid var(--border);border-radius:var(--r)">
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);margin-bottom:.75rem">Example weekly invoice</div>
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;padding:.4rem 0;border-bottom:.5px solid var(--border);color:var(--muted)"><span>12 calls closed</span><span style="color:var(--text)">$8,420 recovered</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;padding:.4rem 0;color:var(--muted)"><span>Our commission</span><span style="color:var(--lime);font-weight:700">$3,368 invoiced</span></div>
+        <div style="font-size:.68rem;color:var(--subtle);margin-top:.5rem">Every call linked to a referral code. Nothing else invoiced.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="how-grid" style="margin-top:2.5rem">
+    <div class="how-card"><div class="how-n">01</div><h3>Discovery call</h3><p>20 minutes. We review your store data and confirm the opportunity.</p></div>
+    <div class="how-card"><div class="how-n">02</div><h3>Your store connects</h3><p>We connect to your platform. Every abandoned cart and phone number routes to your assigned closers automatically.</p></div>
+    <div class="how-card"><div class="how-n">03</div><h3>Closers trained</h3><p>We write scripts, train reps on your products and objections, and get your sign-off before anyone dials.</p></div>
+    <div class="how-card"><div class="how-n">04</div><h3>Revenue lands</h3><p>Every recovered sale tracked by referral code. Weekly report sent. We invoice a commission on what we closed — nothing else. Rate disclosed on your discovery call.</p></div>
+  </div>
+  <div class="how-pills">
+    <div class="how-pill"><strong>48h</strong> from signed to first recovery call</div>
+    <div class="how-pill"><strong>$0</strong> setup, retainer, or minimum</div>
+    <div class="how-pill"><strong>&lt;5m</strong> from abandonment to a live caller</div>
+  </div>
+</div>
+
+
+<!-- CALCULATOR -->
+<hr/>
+<div class="section" id="calc">
+  <div class="sec-num">— Lost revenue calculator</div>
+  <h2>What's leaking from<br>your store right now.</h2>
+  <p class="sub">Drag the sliders. Numbers update live.</p>
+  <div class="calc-wrap">
+    <div class="calc-l">
+      <div class="c-lbl">Daily orders <span id="o-v">200</span></div>
+      <input type="range" id="sl-o" min="10" max="2000" value="200" step="10"/>
+      <div class="c-lbl">Average order value <span id="aov-v">$350</span></div>
+      <input type="range" id="sl-aov" min="50" max="3000" value="350" step="10"/>
+      <div class="c-lbl">Cart abandonment rate <span id="ab-v">70%</span></div>
+      <input type="range" id="sl-ab" min="40" max="90" value="70" step="1"/>
+      <div class="c-lbl">Payment failure rate <span id="pf-v">5%</span></div>
+      <input type="range" id="sl-pf" min="1" max="25" value="5" step="1"/>
+    </div>
+    <div class="calc-r">
+      <div class="c-rl">You're losing roughly</div>
+      <div class="c-big" id="c-lost">—</div>
+      <div class="c-sub" id="c-sub">per month</div>
+      <div class="c-rec-box">
+        <div class="c-rl">We could recover</div>
+        <div class="c-rec-n" id="c-rec">—</div>
+      </div>
+      <div class="c-cells">
+        <div class="c-cell"><div class="c-cell-v" id="c-day">—</div>Lost per day</div>
+        <div class="c-cell"><div class="c-cell-v" id="c-yr">—</div>Lost per year</div>
+        <div class="c-cell"><div class="c-cell-v" id="c-calls">—</div>Calls per month</div>
+        <div class="c-cell"><div class="c-cell-v">28%</div>Avg close rate</div>
+      </div>
+      <a href="#cta" class="btn-primary" style="width:100%;justify-content:center;margin-top:1.4rem;display:flex">
+        Recover this revenue
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<hr/>
+<div class="section" id="pricing">
+  <div class="sec-num">07 — Pricing</div>
+  <h2>$0 until we make<br><span class="g">you money.</span></h2>
+  <p class="sub">Simple, aligned incentives. We earn when you earn — and not before.</p>
+  <div class="price-grid">
+    <div class="price-card feat">
+      <div class="p-lbl">Our model</div>
+      <div class="p-nums">
+        <div><div class="p-num-l">Setup fee</div><div class="p-num-n">$0</div></div>
+        <div><div class="p-num-l">Retainer</div><div class="p-num-n">$0</div></div>
+        <div><div class="p-num-l">Commission</div><div class="p-num-n g">%</div></div>
+      </div>
+      <p class="p-desc">Performance-only. You pay a commission on recovered revenue — and only recovered revenue. Rate shared on your discovery call. We track every sale, invoice weekly, and nothing else.</p>
+      <div class="p-list">
+        <div class="p-row"><div class="chk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Proprietary recovery dialer (exclusive access)</div>
+        <div class="p-row"><div class="chk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Vetted, trained human closers</div>
+        <div class="p-row"><div class="chk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Dedicated account manager</div>
+        <div class="p-row"><div class="chk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>All 4 recovery plays included</div>
+        <div class="p-row"><div class="chk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>100% call recording + AI transcripts</div>
+        <div class="p-row"><div class="chk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Weekly performance + insights report</div>
+      </div>
+    </div>
+    <div class="price-card">
+      <div class="p-lbl">Who we work with</div>
+      <p class="p-desc">We review your store before onboarding. If we can't generate a strong return, we'll tell you on the call — not after you've signed anything.</p>
+      <div style="font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);margin-bottom:.9rem">Best fit</div>
+      <div class="p-list" style="margin-bottom:1.75rem">
+        <div class="p-row"><div style="width:4px;height:4px;border-radius:50%;background:var(--subtle);flex-shrink:0"></div>Average order value above $150</div>
+        <div class="p-row"><div style="width:4px;height:4px;border-radius:50%;background:var(--subtle);flex-shrink:0"></div>50+ abandoned checkouts per week</div>
+        <div class="p-row"><div style="width:4px;height:4px;border-radius:50%;background:var(--subtle);flex-shrink:0"></div>Phone numbers captured at checkout</div>
+        <div class="p-row"><div style="width:4px;height:4px;border-radius:50%;background:var(--subtle);flex-shrink:0"></div>Shopify, WooCommerce, or ClickFunnels</div>
+      </div>
+      <div style="padding:1.1rem 1.25rem;background:var(--bg2);border-radius:var(--r);font-size:.8rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--white);display:block;margin-bottom:4px">Our guarantee</strong>
+        If recovery rates drop below your baseline at any point, we pull our closers, retrain them at our cost, and pause all invoicing until performance is restored. You never pay for a bad month. We have skin in the game — our only revenue comes from what we actually close for you.
+      </div>
+      <a href="#cta" class="btn-primary" style="justify-content:center;margin-top:1.4rem;width:100%;display:flex">
+        See if you qualify
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<hr/>
+<div class="cta-sec" id="cta">
+  <div class="cta-glow"></div>
+  <div class="cta-inner">
+    <div class="sec-num" style="justify-content:center;margin-bottom:1.25rem">08 — Get started</div>
+    <h2>Every week without closers<br>is revenue you don't get back.</h2>
+    <p>20-minute discovery call. We review your store, confirm the opportunity, and show you exactly how CheckoutClosers would run for your brand — including our commission rate. No pitch. If it's not a fit, we'll tell you.</p>
+    <div class="cta-btns">
+      <a href="https://calendly.com/checkoutclosers/call" class="btn-primary" style="font-size:1rem;padding:.9rem 1.75rem" target="_blank" rel="noopener">
+        Book a discovery call
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#calc" class="btn-secondary" style="font-size:1rem;padding:.9rem 1.6rem">Run the calculator</a>
+    </div>
+    <div class="cta-note">$0 setup · $0 retainer · performance commission only · live in 48 hours</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<hr/>
+<div class="foot">
+  <div class="logo">
+    <div class="logo-icon" style="width:26px;height:26px;border-radius:6px">
+      <svg viewBox="0 0 20 20" fill="none" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 14.5C3.8 12.8 5.2 11.8 7 11.5C7.8 11.35 8.5 11.3 9 11.3" stroke="#000" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M9 11.3C9 11.3 9.5 8.5 12 7C14.5 5.5 17 6 17 6" stroke="#000" stroke-width="1.6" stroke-linecap="round"/>
+        <polyline points="13,3 17,3 17,7" stroke="#000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="10" y1="10" x2="17" y2="3" stroke="#000" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+    </div>
+    CheckoutClosers
+  </div>
+  <div class="foot-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="mailto:hello@checkoutclosers.com">hello@checkoutclosers.com</a>
+  </div>
+  <div>© 2026 CheckoutClosers. All rights reserved.</div>
+</div>
+
+<script>
+function fmt(n){
+  if(n>=1e6)return'$'+(n/1e6).toFixed(1)+'M';
+  if(n>=1e3)return'$'+Math.round(n/1e3)+'K';
+  return'$'+Math.round(n).toLocaleString();
+}
+const sl={
+  o:{el:document.getElementById('sl-o'),out:document.getElementById('o-v'),f:v=>v},
+  aov:{el:document.getElementById('sl-aov'),out:document.getElementById('aov-v'),f:v=>'$'+v},
+  ab:{el:document.getElementById('sl-ab'),out:document.getElementById('ab-v'),f:v=>v+'%'},
+  pf:{el:document.getElementById('sl-pf'),out:document.getElementById('pf-v'),f:v=>v+'%'},
+};
+function calc(){
+  const o=+sl.o.el.value,aov=+sl.aov.el.value,ab=+sl.ab.el.value/100,pf=+sl.pf.el.value/100;
+  const day=(o*ab+o*pf)*aov,mo=day*30,yr=day*365,rec=mo*0.28,calls=Math.round((o*ab+o*pf)*30);
+  document.getElementById('c-lost').textContent=fmt(mo)+'/mo';
+  document.getElementById('c-sub').textContent='≈ '+fmt(day)+'/day · '+fmt(yr)+'/year';
+  document.getElementById('c-rec').textContent=fmt(rec)+'/mo';
+  document.getElementById('c-day').textContent=fmt(day);
+  document.getElementById('c-yr').textContent=fmt(yr);
+  document.getElementById('c-calls').textContent=calls.toLocaleString();
+}
+Object.values(sl).forEach(({el,out,f})=>{el.addEventListener('input',()=>{out.textContent=f(el.value);calc();});});
+calc();
+
+// Live total counter
+let total=41580939;
+setInterval(()=>{
+  total+=Math.floor(Math.random()*800)+100;
+  document.getElementById('hero-total').textContent='$'+total.toLocaleString();
+},4000);
+
+// Live call timer — counts up from 4:23
+let callSecs=263;
+setInterval(()=>{
+  callSecs++;
+  const m=Math.floor(callSecs/60),s=callSecs%60;
+  const el=document.getElementById('call-timer');
+  if(el)el.textContent=m+':'+(s<10?'0':'')+s;
+},1000);
+</script>
+</body>
+</html>
